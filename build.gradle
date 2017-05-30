@@ -25,11 +25,13 @@ task releaseBranch {
 
             println "ls".execute().text
 
-            println(
-                    ['curl',
-                     '"http://httpbin.org/get"'
-                    ].execute().text
-            )
+            def proc = ['curl',
+             '"http://httpbin.org/get"'
+            ].execute()
+            proc.waitFor()
+
+            println(proc.text)
+            println(proc.err)
 
             println(
                     ['curl',
