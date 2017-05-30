@@ -1,22 +1,39 @@
 task releaseBranch {
     doLast {
-        
+
         println("releaseBranch")
 
-		def branch = System.getenv('CIRCLE_BRANCH')
+        def branch = System.getenv('CIRCLE_BRANCH')
         def tag = System.getenv('RELEASE_TAG')
+        def token = System.getenv('CIRCLE_TOKEN')
+        def sha = System.getenv('CIRCLE_SHA1')
+        def user = System.getenv('CIRCLE_PROJECT_USERNAME')
+        def repo = System.getenv('CIRCLE_PROJECT_REPONAME')
 
         println('branch: ' + branch)
         println('tag: ' + tag)
+        println('sha: ' + sha)
+        println('user: ' + user)
+        println('repo: ' + repo)
 
         if (tag == 'marketing') {
-			println("tag is marketing")
-		} else if (tag == 'staging') {
-			println("tag is staging")
-		} else if (branch != null && branch.contains('release/')) {
-			println("branch is release")
-		} else {
-			println("no tag or branch")
-		}
+            println("tag is marketing")
+        } else if (tag == 'staging') {
+            println("tag is staging")
+        } else if (branch != null && branch.contains('release/')) {
+            println("branch is release")
+
+            def p = ['curl',
+                     '-u', token + ':',
+                     '-d', 'build_parameters[RELEASE_TAG]=staging',
+                     '-d', 'revision=' + sha,
+                    '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
+            ]
+
+            println(p)
+
+        } else {
+            println("no tag or branch")
+        }
     }
 }
