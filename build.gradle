@@ -31,6 +31,8 @@ task releaseBranch {
              '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
             ].execute()
 
+            p.waitForOrKill(5000)
+
             def p2 = ['curl',
              '-X', 'POST',
              '-u', token + ':',
@@ -39,8 +41,10 @@ task releaseBranch {
              '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
             ].execute()
 
-            println(p)
-            println(2)
+            p2.waitForOrKill(5000)
+
+            println(p.text)
+            println(p2.text)
 
         } else {
             println("no tag or branch")
