@@ -23,7 +23,7 @@ task releaseBranch {
         } else if (branch != null && branch.contains('release/')) {
             println("branch is release")
 
-            ['curl',
+            def p = ['curl',
              '-X', 'POST',
              '-u', token + ':',
              '-d', 'build_parameters[RELEASE_TAG]=staging',
@@ -31,13 +31,16 @@ task releaseBranch {
              '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
             ].execute()
 
-            ['curl',
+            def p2 = ['curl',
              '-X', 'POST',
              '-u', token + ':',
              '-d', 'build_parameters[RELEASE_TAG]=marketing',
              '-d', 'revision=' + sha,
              '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
             ].execute()
+
+            println(p)
+            println(2)
 
         } else {
             println("no tag or branch")
