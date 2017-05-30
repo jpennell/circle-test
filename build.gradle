@@ -1,11 +1,22 @@
-task one {
+task releaseBranch {
     doLast {
-        println("one")
-    }
-}
+        
+        println("releaseBranch")
 
-task two {
-    doLast {
-        println("two")
+		def branch = System.getenv('CIRCLE_BRANCH')
+        def tag = System.getenv('RELEASE_TAG')
+
+        println('branch: ' + branch)
+        println('tag: ' + tag)
+
+        if (tag == 'marketing') {
+			println("tag is marketing")
+		} else if (tag == 'staging') {
+			println("tag is staging")
+		} else if (branch != null && branch.contains('release/')) {
+			println("branch is release")
+		} else {
+			println("no tag or branch")
+		}
     }
 }
