@@ -1,0 +1,11 @@
+task one {
+    doLast {
+        println("one")
+    }
+}
+
+task two {
+    doLast {
+        println("two")
+    }
+}
