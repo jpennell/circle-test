@@ -37,7 +37,7 @@ task releaseBranch {
             println("branch is release")
 
             def http = new HTTPBuilder("https://circleci.com/api/v1.1/project/github/" + user + "/" + repo + "/tree/" + branch)
-            http.auth.basic token, ''
+            http.setHeaders([Authorization: "Basic " + (token + ":").bytes.encodeBase64().toString()])
             def body = [
                 'build_parameters[RELEASE_TAG]': 'staging',
                 'revision': sha
