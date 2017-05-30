@@ -2,6 +2,7 @@ task releaseBranch {
     doLast {
 
         println("releaseBranch")
+        println("")
 
         def branch = System.getenv('CIRCLE_BRANCH')
         def tag = System.getenv('RELEASE_TAG')
@@ -23,36 +24,22 @@ task releaseBranch {
         } else if (branch != null && branch.contains('release/')) {
             println("branch is release")
 
-            println "ls".execute().text
+            def req = ['curl',
+             '-X', 'POST',
+             '-u', token + ':',
+             '-d', 'build_parameters[RELEASE_TAG]=staging',
+             '-d', 'revision=' + sha,
+             '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
+            ]
 
-            def proc = ['curl',
-             '"http://httpbin.org/get"'
-            ].execute()
-            proc.waitFor()
+            def reqProc = req.execute()
+            def reqProcResult = reqProc.waitFor()
 
-            println(proc.text)
-            println(proc.err)
-
-            println(
-                    ['curl',
-                     '-X', 'POST',
-                     '-u', token + ':',
-                     '-d', 'build_parameters[RELEASE_TAG]=staging',
-                     '-d', 'revision=' + sha,
-                     '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
-                    ].execute().text
-            )
-
-            println(
-                    ['curl',
-                     '-X', 'POST',
-                     '-u', token + ':',
-                     '-d', 'build_parameters[RELEASE_TAG]=marketing',
-                     '-d', 'revision=' + sha,
-                     '"https://circleci.com/api/v1.1/project/github/' + user + '/' + repo + '/tree/' + branch + '"'
-                    ].execute().text
-            )
-
+            println(req)
+            println(reqProc)
+            println(reqProcResult)
+            println(reqProc.text)
+            println(reqProc.err)
         } else {
             println("no tag or branch")
         }
